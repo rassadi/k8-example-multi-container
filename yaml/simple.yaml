@@ -1,0 +1,45 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-rest-golang-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simple-python
+  template:
+    metadata:
+      labels:
+        app: simple-python
+    spec:
+      shareProcessNamespace: true
+      containers:
+        - name: simple-python-1
+          image: c1:latest
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+          imagePullPolicy: Never
+          volumeMounts:
+          - name: common-config
+            mountPath: /common1
+        - name: simple-python-2
+          image: c2:latest
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+          imagePullPolicy: Never
+          volumeMounts:
+          - name: common-config
+            mountPath: /common2
+      volumes:
+      - name: common-config
+        emptyDir: {}
+---
